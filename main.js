@@ -80,7 +80,7 @@ function TableViewComponent_div_0_div_45_Template(rf, ctx) { if (rf & 1) {
     const _r21 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 59);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "mat-paginator", 60);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("page", function TableViewComponent_div_0_div_45_Template_mat_paginator_page_1_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r21); const ctx_r20 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2); ctx_r20.pageSize = $event.pageSize; ctx_r20.page = $event.pageIndex; ctx_r20.getBody.limit = $event.pageSize; ctx_r20.getBody.page = $event.pageIndex; return ctx_r20.getFilterValues(); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("page", function TableViewComponent_div_0_div_45_Template_mat_paginator_page_1_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r21); const ctx_r20 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2); ctx_r20.pageSize = $event.pageSize; ctx_r20.page = $event.pageIndex; ctx_r20.getBody.limit = $event.pageSize; ctx_r20.getBody.page = $event.pageIndex; return ctx_r20.getFilter(); });
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 } if (rf & 2) {
@@ -533,10 +533,11 @@ class TableViewComponent {
         this.displayedColumns = [];
         // selectedSearchField: any;
         this.tableDataSource = new _angular_material_table__WEBPACK_IMPORTED_MODULE_1__["MatTableDataSource"];
+        this.data1 = [];
         this.columnsToDisplay1 = ["select"];
         this.pageSize = 10;
         this.page = 0;
-        this.getBody = { table_name: "", limit: this.pageSize, page: 0, sort_type: "ASC", sort_field: "id" };
+        this.getBody = { table_name: "", limit: this.pageSize, page: 0, sort_type: "ASC", sort_field: "id", data_table_id: '' };
         this.columnsOrder = [];
         this.hideColumns = [];
         this.selectedSearchField = { name: '', display_value: '' };
@@ -567,6 +568,8 @@ class TableViewComponent {
         this.filterFieldSelect = "";
         this.loaded = "false";
         this.fieldType = '';
+        this.dropDown = [];
+        this.dropDownKey = [];
     }
     ngOnInit() {
         this.aRouter.queryParams.subscribe((params) => {
@@ -574,9 +577,10 @@ class TableViewComponent {
             if (!!this.routeId) {
                 this.tableId = this.routeId.id;
                 this.getBody.table_name = this.routeId.tablename;
+                this.getBody.data_table_id = this.routeId.id;
                 this.getTableData();
                 this.getColumns();
-                this.getFilter();
+                // this.getFilter()
             }
         });
     }
@@ -629,6 +633,13 @@ class TableViewComponent {
         let value = { table_name: this.routeId.tablename };
         this.CommonService.getMetaData(value).subscribe((response) => {
             this.metaData1 = response.info;
+            for (let j = 0; j < this.metaData1.length; j++) {
+                if (this.metaData1[j].field_sub_type == "select" && this.metaData1[j].parent_table_field != "") {
+                    this.dropDown.push(this.metaData1[j].parent_table_field);
+                    this.dropDownKey.push(this.metaData1[j].name);
+                }
+            }
+            this.getFilter();
             let temp = [];
             for (let i = 0; i < this.columnsOrder.length; i++) {
                 for (let j = 0; j < this.metaData1.length; j++) {
@@ -737,11 +748,29 @@ class TableViewComponent {
             }
             this.getBody["filter"] = temp;
         }
-        this.CommonService.getFiterValues(this.getBody).subscribe((response) => {
-            this.getBody = { table_name: this.routeId.tablename, limit: this.pageSize, page: this.page, sort_type: "ASC", sort_field: "id" };
+        this.CommonService.getFiterTableValues(this.getBody).subscribe((response) => {
+            this.getBody = { table_name: this.routeId.tablename, data_table_id: this.routeId.id, limit: this.pageSize, page: this.page, sort_type: "ASC", sort_field: "id" };
             // this.selectSearchValue='';
             this.data1 = response.info;
-            console.log("getFilterValues()", this.data1);
+            console.log("drop", this.dropDown);
+            console.log("key", this.dropDownKey);
+            for (let i = 0; i < this.data1.length; i++) {
+                for (let j = 0; j < this.dropDownKey.length; j++) {
+                    if (this.data1[i].hasOwnProperty(this.dropDownKey[j])) {
+                        if (this.data1[i][this.dropDownKey[j]] != null) {
+                            if (!!this.data1[i][this.dropDownKey[j]].length) {
+                                for (let k = 0; k < this.dropDown.length; k++) {
+                                    if (this.data1[i][this.dropDownKey[j]][0].hasOwnProperty(this.dropDown[k])) {
+                                        // this.data1[i][this.dropDownKey[j]] = '';
+                                        this.data1[i][this.dropDownKey[j]] = this.data1[i][this.dropDownKey[j]][0][this.dropDown[k]];
+                                        console.log("getFilterValues()", this.data1[i]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             this.tableDataSource = new _angular_material_table__WEBPACK_IMPORTED_MODULE_1__["MatTableDataSource"](this.data1);
             this.loaded = "true";
             this.count = response.total_count[0][cot];
@@ -1014,8 +1043,9 @@ __webpack_require__.r(__webpack_exports__);
 // The list of file replacements can be found in `angular.json`.
 const environment = {
     production: false,
-    url: 'https://api.myairliftusa.com/tracking/'
-    // url: 'http://localhost:8586/tracking/'
+    // url: 'https://api.myairliftusa.com/tracking/',
+    fileUrl: 'https://api.myairliftusa.com/trackingfiles/insert/',
+    url: 'http://localhost:8586/tracking/'
 };
 /*
  * For easier debugging in development mode, you can import the following file
@@ -1858,6 +1888,7 @@ class CommonService {
         this.snackBar = snackBar;
         this.http = http;
         this.baseUrl = _environments_environment__WEBPACK_IMPORTED_MODULE_2__["environment"].url;
+        this.fileUrl = _environments_environment__WEBPACK_IMPORTED_MODULE_2__["environment"].fileUrl;
         this.httpOptions = {
             headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpHeaders"]({
                 'Content-Type': 'application/json',
@@ -1900,6 +1931,9 @@ class CommonService {
     }
     getFiterValues(value) {
         return this.http.post(this.baseUrl + 'commonFilter/', value, this.httpOptions);
+    }
+    getFiterTableValues(value) {
+        return this.http.post(this.baseUrl + 'process/getTableData/', value, this.httpOptions);
     }
     putFiterValues(value) {
         return this.http.post(this.baseUrl + 'insertFilter/', value, this.httpOptions);
@@ -1955,7 +1989,7 @@ class CommonService {
         return this.http.post(this.baseUrl + 'commonInsert/', payload, this.httpOptions);
     }
     createFile(value) {
-        return this.http.post(this.baseUrl + 'file/insert/', value, this.httpOptions);
+        return this.http.post(this.fileUrl, value, this.httpOptions);
     }
     //Format date for httpOption
     formatDate() {
