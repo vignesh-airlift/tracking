@@ -1043,9 +1043,8 @@ __webpack_require__.r(__webpack_exports__);
 // The list of file replacements can be found in `angular.json`.
 const environment = {
     production: false,
-    // url: 'https://api.myairliftusa.com/tracking/',
+    url: 'https://api.myairliftusa.com/tracking/',
     fileUrl: 'https://api.myairliftusa.com/trackingfiles/insert/',
-    url: 'http://localhost:8586/tracking/'
 };
 /*
  * For easier debugging in development mode, you can import the following file
