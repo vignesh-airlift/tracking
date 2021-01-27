@@ -1623,7 +1623,7 @@ class EditViewComponent {
     }
     fileUpload(event, name) {
         this.fileChange = 1;
-        console.log('responsezdfbk', event);
+        // console.log('responsezdfbk', event);
         this.CommonService.uploadFile(event).then((response) => {
             console.log(response, 'response');
             if (!!this.storeFile[name]) {
