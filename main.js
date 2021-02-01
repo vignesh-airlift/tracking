@@ -2275,6 +2275,9 @@ class CommonService {
         payload.filter.push({ "table_name": table_name });
         return this.http.post(this.baseUrl + 'commonGet/', payload, this.httpOptions);
     }
+    commonInsert(payload) {
+        return this.http.post(this.baseUrl + 'commonInsert/', payload, this.httpOptions);
+    }
 }
 CommonService.ɵfac = function CommonService_Factory(t) { return new (t || CommonService)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_material_snack_bar__WEBPACK_IMPORTED_MODULE_3__["MatSnackBar"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"])); };
 CommonService.ɵprov = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({ token: CommonService, factory: CommonService.ɵfac, providedIn: 'root' });

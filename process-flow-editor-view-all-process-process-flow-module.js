@@ -831,6 +831,33 @@ class AllProcessViewComponent {
                 var _a;
                 if ((response === null || response === void 0 ? void 0 : response.statusCode) === 200) {
                     this.commonService.showSnackbar('Successfully Process Created', ['green-growl']);
+                    const payload = {
+                        "values": [
+                            {
+                                "designation_id": 1,
+                                "designation": "developer",
+                                "table_id": response.last_insert_id[0],
+                                "create_item": 1,
+                                "edit_process": 1,
+                                "deletes": 1,
+                                "updates": 1,
+                                "reports": 1,
+                                "mail": 1,
+                                "mass_update": 1,
+                                "mass_mail": 1
+                            }
+                        ],
+                        "table_name": "process_permission"
+                    };
+                    this.commonService.commonInsert(payload).subscribe((response) => {
+                        if ((response === null || response === void 0 ? void 0 : response.statusCode) === 200) {
+                        }
+                        else {
+                            console.log('permission not inserted');
+                        }
+                    }, (error) => {
+                        console.log('permission api error');
+                    });
                 }
                 else {
                     this.commonService.showSnackbar('Process Not Created, please Try Again', ['red-growl']);
