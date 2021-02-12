@@ -152,6 +152,22 @@ class ProcessService {
             .map(x => x.toLowerCase())
             .join('_');
     }
+    getDesignation(id) {
+        const payload = {
+            "limit": 100,
+            "page": 0,
+            "db_name": "tracking_tb",
+            "table_name": "designation",
+            "sort_type": "ASC",
+            "sort_field": "id",
+            "filter": [
+                {
+                    "id": id
+                }
+            ]
+        };
+        return this.http.post(this.baseUrl + 'commonGet/', payload, this.commonService.httpOptions);
+    }
 }
 ProcessService.ɵfac = function ProcessService_Factory(t) { return new (t || ProcessService)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_common_service__WEBPACK_IMPORTED_MODULE_3__["CommonService"])); };
 ProcessService.ɵprov = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({ token: ProcessService, factory: ProcessService.ɵfac, providedIn: 'root' });
@@ -831,33 +847,41 @@ class AllProcessViewComponent {
                 var _a;
                 if ((response === null || response === void 0 ? void 0 : response.statusCode) === 200) {
                     this.commonService.showSnackbar('Successfully Process Created', ['green-growl']);
-                    const payload = {
-                        "values": [
-                            {
-                                "designation_id": 1,
-                                "designation": "developer",
-                                "table_id": response.last_insert_id[0],
-                                "create_item": 1,
-                                "edit_process": 1,
-                                "deletes": 1,
-                                "updates": 1,
-                                "reports": 1,
-                                "mail": 1,
-                                "mass_update": 1,
-                                "mass_mail": 1
+                    const data = JSON.parse(localStorage.getItem('user_data'));
+                    if (data && data.designation) {
+                        this.processService.getDesignation(parseInt(data.designation)).subscribe((data) => {
+                            if (data.statusCode === 200 && data['info'] && data['info'][0]) {
+                                console.log('am response');
+                                const payload = {
+                                    "values": [
+                                        {
+                                            "designation_id": data['info'][0].id,
+                                            "designation": data['info'][0].designation,
+                                            "table_id": response.last_insert_id[0],
+                                            "create_item": 1,
+                                            "edit_process": 1,
+                                            "deletes": 1,
+                                            "updates": 1,
+                                            "reports": 1,
+                                            "mail": 1,
+                                            "mass_update": 1,
+                                            "mass_mail": 1
+                                        }
+                                    ],
+                                    "table_name": "process_permission"
+                                };
+                                this.commonService.commonInsert(payload).subscribe((response) => {
+                                    if ((response === null || response === void 0 ? void 0 : response.statusCode) === 200) {
+                                    }
+                                    else {
+                                        console.log('permission not inserted');
+                                    }
+                                }, (error) => {
+                                    console.log('permission api error');
+                                });
                             }
-                        ],
-                        "table_name": "process_permission"
-                    };
-                    this.commonService.commonInsert(payload).subscribe((response) => {
-                        if ((response === null || response === void 0 ? void 0 : response.statusCode) === 200) {
-                        }
-                        else {
-                            console.log('permission not inserted');
-                        }
-                    }, (error) => {
-                        console.log('permission api error');
-                    });
+                        });
+                    }
                 }
                 else {
                     this.commonService.showSnackbar('Process Not Created, please Try Again', ['red-growl']);
