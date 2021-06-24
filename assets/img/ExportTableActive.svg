@@ -1,0 +1,5 @@
+<svg id="Export_Table_Active" data-name="Export Table Active" xmlns="http://www.w3.org/2000/svg" width="16.625" height="14.929" viewBox="0 0 16.625 14.929">
+  <path id="Icon_metro-table" data-name="Icon metro-table" d="M2.571,3.856V15.787H14.908V3.856H2.571ZM7.2,11.526V8.969h3.084v2.557Zm3.084.852v2.557H7.2V12.378Zm0-6.818V8.117H7.2V5.561h3.084Zm-3.856,0V8.117H3.342V5.561H6.426ZM3.342,8.969H6.426v2.557H3.342Zm7.711,0h3.084v2.557H11.053Zm0-.852V5.561h3.084V8.117ZM3.342,12.378H6.426v2.557H3.342V12.378Zm7.711,2.557V12.378h3.084v2.557Z" transform="translate(-2.571 -3.856)" fill="#fff"/>
+  <circle id="Ellipse_123" data-name="Ellipse 123" cx="5" cy="5" r="5" transform="translate(6.625 4.929)" fill="#545f75"/>
+  <path id="Icon_material-import-export" data-name="Icon material-import-export" d="M8.839,4.5,7.5,5.835h1V8.181h.669V5.835h1Zm2.343,4.689V6.843h-.669V9.189h-1l1.339,1.335,1.339-1.335Z" transform="translate(2.44 3.097)" fill="#fff"/>
+</svg>
